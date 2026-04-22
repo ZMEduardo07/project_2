@@ -16,6 +16,12 @@ dependencies {
     implementation 'org.xerial:sqlite-jdbc:3.46.1.3'
 }
 
+sourceSets {
+    test {
+        java.srcDirs = ['src/main/test/java']
+    }
+}
+
 test {
     useJUnitPlatform()
 }

@@ -59,4 +59,35 @@ public class AuthService {
             return false;
         }
     }
+
+    public boolean updatePassword(String username, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE username = ?";
+
+        try (Connection conn = DatabaseManager.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, PasswordUtil.hashPassword(newPassword));
+            pstmt.setString(2, username);
+
+            int rowsUpdated = pstmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean deleteUser(String username) {
+        String sql = "DELETE FROM users WHERE username = ?";
+
+        try (Connection conn = DatabaseManager.connect();
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+
+            int rowsDeleted = pstmt.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
 }
