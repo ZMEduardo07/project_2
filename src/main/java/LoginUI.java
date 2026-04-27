@@ -13,7 +13,7 @@ public class LoginUI extends Application {
 
     @Override
     public void start(Stage stage) {
-        LoginScreen loginScreen = new LoginScreen();
+        LoginScreen loginScreen = new LoginScreen(stage);
 
         Scene scene = new Scene(loginScreen.getLayout(), 600, 600);
 

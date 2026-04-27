@@ -3,6 +3,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * Eduardo Zamora-Melgoza
@@ -15,7 +16,10 @@ public class LoginScreen {
 
     private VBox layout;
 
-    public LoginScreen(){
+    private Stage stage;
+
+    public LoginScreen(Stage stage){
+        this.stage = stage;
         createLoginScreen();
     }
 
@@ -64,7 +68,8 @@ public class LoginScreen {
         });
 
         signUpButton.setOnAction(e -> {
-            messageLabel.setText(" You are being redirected to the Sign Up page. ");
+            SignUpScreen signUpScreen = new SignUpScreen(stage);
+            stage.getScene().setRoot(signUpScreen.getLayout());
         });
 
         HBox buttonBox = new HBox(30, loginButton, signUpButton);
