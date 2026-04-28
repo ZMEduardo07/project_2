@@ -66,6 +66,10 @@ public class LoginScreen {
 
             if(success) {
             messageLabel.setText("Login Successful!");
+
+                HomeScreen homeScreen = new HomeScreen(stage);
+                stage.getScene().setRoot(homeScreen.getLayout());
+
             } else {
                 messageLabel.setText(" Invalid Username or Password.\n                     Try again.");
             }
