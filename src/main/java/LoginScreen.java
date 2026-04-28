@@ -61,7 +61,8 @@ public class LoginScreen {
             String password = passwordField.getText();
 
             if(username.equals("EZM_Admin") && password.equals("Zamora")) {
-            messageLabel.setText("Login Successful!");
+                HomeScreen homeScreen = new HomeScreen(stage);
+                stage.getScene().setRoot(homeScreen.getLayout());
             } else {
                 messageLabel.setText(" Invalid Username or Password.\n                     Try again.");
             }
