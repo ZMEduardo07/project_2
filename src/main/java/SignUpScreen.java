@@ -67,13 +67,21 @@ public class SignUpScreen {
             String password = passwordField.getText();
             String confirm = confirmField.getText();
 
+            AuthService authService = new AuthService();
+
             if (username.isEmpty() || password.isEmpty() || confirm.isEmpty()) {
                 messageLabel.setText("           There are fields to be completed.\n      Please make sure to complete all fields.");
             } else if (!password.equals(confirm)) {
                 messageLabel.setText("Passwords do not match.");
             }
             else {
-                messageLabel.setText("Account created successfully!");
+
+                boolean created = authService.registerUser(username, password);
+                if (created) {
+                    messageLabel.setText("Account created successfully!");
+                } else {
+                    messageLabel.setText("Account already exists.");
+                }
             }
         });
 
