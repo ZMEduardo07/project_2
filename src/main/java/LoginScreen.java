@@ -67,8 +67,7 @@ public class LoginScreen {
             if(success) {
             messageLabel.setText("Login Successful!");
 
-                HomeScreen homeScreen = new HomeScreen(stage);
-                stage.getScene().setRoot(homeScreen.getLayout());
+                SceneManager.getInstance().showHomeScreen();
 
             } else {
                 messageLabel.setText(" Invalid Username or Password.\n                     Try again.");
@@ -76,8 +75,7 @@ public class LoginScreen {
         });
 
         signUpButton.setOnAction(e -> {
-            SignUpScreen signUpScreen = new SignUpScreen(stage);
-            stage.getScene().setRoot(signUpScreen.getLayout());
+            SceneManager.getInstance().showSignUpScreen();
         });
 
         HBox buttonBox = new HBox(30, loginButton, signUpButton);
