@@ -67,7 +67,7 @@ public class LoginScreen {
             if(success) {
             messageLabel.setText("Login Successful!");
 
-                SceneManager.getInstance().showHomeScreen();
+                SceneManager.getInstance().showDashboardScreen();
 
             } else {
                 messageLabel.setText(" Invalid Username or Password.\n                     Try again.");
