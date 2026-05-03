@@ -2,5 +2,6 @@
 public enum SceneType {
     MAIN,
     DASHBOARD,
-    ADD_ITEM
+    ADD_ITEM,
+    SIGN_UP
 }
