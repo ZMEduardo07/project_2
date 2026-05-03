@@ -7,6 +7,12 @@ public class DatabaseManager {
     private static final String URL = "jdbc:sqlite:users.db";
 
     public static Connection connect() throws SQLException {
+        try{
+            Class.forName("org.sqlite.JDBC");
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("SQLite JDBC Driver not found", e);
+        }
+
         return DriverManager.getConnection(URL);
     }
 

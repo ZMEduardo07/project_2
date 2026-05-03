@@ -79,6 +79,7 @@ public class SignUpScreen {
                 boolean created = authService.registerUser(username, password);
                 if (created) {
                     messageLabel.setText("Account created successfully!");
+                    SceneManager.getInstance().showLoginScreen();
                 } else {
                     messageLabel.setText("Account already exists.");
                 }
@@ -86,8 +87,7 @@ public class SignUpScreen {
         });
 
         backButton.setOnAction(e -> {
-            LoginScreen loginScreen = new LoginScreen(stage);
-            stage.getScene().setRoot(loginScreen.getLayout());
+            SceneManager.getInstance().showLoginScreen();
         });
 
         layout = new VBox(25);
