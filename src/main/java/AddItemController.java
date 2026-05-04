@@ -36,8 +36,7 @@ public class AddItemController {
             String item = itemField.getText();
             if (!item.isBlank()) {
                 DashboardController.addTask(item);
-                DashboardController dashboardController = new DashboardController(stage);
-                stage.getScene().setRoot(dashboardController.getLayout());
+                SceneManager.getInstance().showDashboardScreen();
             } else {
                 messageLabel.setText("Item cannot be empty.");
             }
@@ -49,8 +48,7 @@ public class AddItemController {
         AppStyleManager.applyButtonStyle(cancelButton);
 
         cancelButton.setOnAction(e -> {
-            DashboardController dashboardController = new DashboardController(stage);
-            stage.getScene().setRoot(dashboardController.getLayout());
+            SceneManager.getInstance().showDashboardScreen();
         });
 
         layout = new VBox(20);
