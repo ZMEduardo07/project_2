@@ -1,5 +1,4 @@
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
@@ -13,17 +12,16 @@ public class LoginUI extends Application {
 
     @Override
     public void start(Stage stage) {
+        DatabaseManager.initializeDatabase();
 
-        SceneManager manager = SceneManager.getInstance();
-        manager.setStage(stage);
-        manager.showLoginScreen();
+        SceneManager.getInstance().navigateTo(SceneType.MAIN);
+        SceneManager.getInstance().setStage(stage);
 
         stage.setTitle("Student Productivity");
         stage.show();
     }
 
     public static void main(String[] args){
-        DatabaseManager.initializeDatabase();
         launch();
     }
 }

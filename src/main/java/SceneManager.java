@@ -7,7 +7,9 @@ public class SceneManager {
     private static SceneManager instance;
     private Stage stage;
 
-    private SceneManager() {}
+    private SceneManager() {
+
+    }
 
         public static SceneManager getInstance () {
             if (instance == null) {
@@ -21,19 +23,14 @@ public class SceneManager {
 
         }
 
-        public void showLoginScreen() {
-        LoginScreen loginScreen = new LoginScreen(stage);
-        stage.setScene(new Scene(loginScreen.getLayout()));
+        public void navigateTo(SceneType sceneType) {
+        Scene scene = SceneFactory.create(sceneType);
+        stage.setScene(scene);
         }
 
-        public void showSignUpScreen() {
-        SignUpScreen signUpScreen = new SignUpScreen(stage);
-        stage.getScene().setRoot(signUpScreen.getLayout());
-        }
-
-        public void showHomeScreen() {
-        HomeScreen homeScreen = new HomeScreen(stage);
-        stage.getScene().setRoot(homeScreen.getLayout());
+        public void navigateFresh(SceneType sceneType) {
+        Scene scene = SceneFactory.create(sceneType);
+        stage.setScene(scene);
         }
 
         public void showDashboardScreen() {
