@@ -33,6 +33,16 @@ public class SceneManager {
         stage.setScene(scene);
         }
 
+        public void showDashboardScreen() {
+        DashboardController dashboardController = new DashboardController(stage);
+        stage.getScene().setRoot(dashboardController.getLayout());
+        }
+
+        public void showAddItemScreen() {
+        AddItemController addItemController = new AddItemController(stage);
+        stage.getScene().setRoot(addItemController.getLayout());
+        }
+
 
 
 
