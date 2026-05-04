@@ -8,6 +8,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Siberaja Nadar
+ * 4/21/26
+ * 
+ * 
+ */
+
 public class DatabaseTest {
     private static final Path DATABASE_PATH = Path.of("users.db");
 

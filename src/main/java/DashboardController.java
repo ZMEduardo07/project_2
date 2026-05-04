@@ -9,11 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class DashboardController {
-    private static final ObservableList<String> TASKS = FXCollections.observableArrayList(
-            "Task 1",
-            "Task 2",
-            "Task 3"
-    );
+    private static final ObservableList<String> TASKS = FXCollections.observableArrayList();
 
     private VBox layout;
     private Stage stage;
@@ -37,8 +33,7 @@ public class DashboardController {
         AppStyleManager.applyButtonStyle(addItemButton);
 
         addItemButton.setOnAction(e -> {
-            AddItemController addItemController = new AddItemController(stage);
-            stage.getScene().setRoot(addItemController.getLayout());
+            SceneManager.getInstance().showAddItemScreen();
         });
 
         Button logoutButton = new Button("Log out");
@@ -47,8 +42,7 @@ public class DashboardController {
         AppStyleManager.applyButtonStyle(logoutButton);
 
         logoutButton.setOnAction(e -> {
-            LoginScreen loginScreen = new LoginScreen(stage);
-            stage.getScene().setRoot(loginScreen.getLayout());
+            SceneManager.getInstance().showLoginScreen();
         });
 
         layout = new VBox(20);
