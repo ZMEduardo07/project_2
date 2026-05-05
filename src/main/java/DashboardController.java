@@ -1,10 +1,7 @@
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -15,6 +12,9 @@ import java.time.LocalTime;
 public class DashboardController implements TodoObserver {
     private ListView<TodoItem> taskList;
     private final TodoRepository repository;
+    private ProgressBar taskProgressBar;
+    private Label progressLabel;
+
 
     public DashboardController(){
         repository = TodoRepository.getInstance();
@@ -38,7 +38,25 @@ public class DashboardController implements TodoObserver {
         taskList.setPlaceholder(createEmptyTaskLabel());
         taskList.setStyle(AppStyleManager.TASK_LIST_STYLE);
 
+        taskProgressBar = new ProgressBar(0);
+        taskProgressBar.setPrefWidth(720);
+
+        progressLabel = new Label("0% complete");
+        progressLabel.setStyle(AppStyleManager.MESSAGE_STYLE);
+
+
+        Button completeButton = new Button("Complete");
+        completeButton.setPrefWidth(120);
+        completeButton.setPrefHeight(38);
+        AppStyleManager.applyButtonStyle(completeButton);
+
+        completeButton.setOnAction(e -> {
+            TodoItem selectedTask = taskList.getSelectionModel().getSelectedItem();
+            repository.markCompleted(selectedTask);
+        });
+
         taskList.setCellFactory(listView -> new ListCell<>(){
+
 
 
             @Override
@@ -78,7 +96,7 @@ public class DashboardController implements TodoObserver {
         HBox topRow = new HBox(20);
         topRow.setAlignment(Pos.CENTER);
         topRow.setMaxWidth(760);
-        topRow.getChildren().addAll(greetingBox, spacer, logoutButton);
+        topRow.getChildren().addAll(greetingBox, spacer, completeButton, logoutButton);
 
         VBox content = new VBox(18);
         content.setAlignment(Pos.TOP_CENTER);
@@ -86,6 +104,8 @@ public class DashboardController implements TodoObserver {
         content.setStyle(AppStyleManager.BACKGROUND_STYLE);
         content.getChildren().addAll(
                 topRow,
+                taskProgressBar,
+                progressLabel,
                 taskList
         );
 
@@ -102,6 +122,24 @@ public class DashboardController implements TodoObserver {
     private void refreshTasks() {
         taskList.getItems().clear();
         taskList.getItems().addAll(repository.getTodos());
+
+        int totalTasks = repository.getTodos().size();
+        int completedTasks = 0;
+
+        for(TodoItem item : repository.getTodos()){
+            if(item.isCompleted()){
+                completedTasks++;
+            }
+        }
+
+        double progress = 0.0;
+        if (totalTasks > 0){
+            progress = (double) completedTasks / totalTasks;
+        }
+        taskProgressBar.setProgress(progress);
+        int percent = (int)(progress * 100);
+        progressLabel.setText(percent + "% complete");
+
     }
 
     @Override

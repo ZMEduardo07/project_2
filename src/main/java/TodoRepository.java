@@ -41,7 +41,7 @@ public class TodoRepository {
     }
 
     public void markCompleted(TodoItem item) {
-        if (item == null) {
+        if (item != null) {
             item.markCompleted();
             notifyObservers();
         }
