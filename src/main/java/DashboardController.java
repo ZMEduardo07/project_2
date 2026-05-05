@@ -1,7 +1,6 @@
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -11,21 +10,18 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import java.time.LocalTime;
 
-public class DashboardController {
-    private static final ObservableList<String> TASKS = FXCollections.observableArrayList();
+public class DashboardController implements TodoObserver {
+    private ListView<TodoItem> taskList;
+    private final TodoRepository repository;
 
-    private StackPane layout;
-    private Stage stage;
-
-    public DashboardController(Stage stage) {
-        this.stage = stage;
-        createDashboard();
+    public DashboardController(){
+        repository = TodoRepository.getInstance();
+        repository.addObserver(this);
     }
 
-    private void createDashboard() {
+    public Scene buildScene() {
         Label titleLabel = new Label(getGreeting());
         titleLabel.setStyle(AppStyleManager.TITLE_STYLE);
 
@@ -36,32 +32,35 @@ public class DashboardController {
         greetingBox.setAlignment(Pos.CENTER_LEFT);
         greetingBox.getChildren().addAll(titleLabel, subtitleLabel);
 
-        ListView<String> taskList = new ListView<>();
-        taskList.setItems(TASKS);
+        taskList = new ListView<>();
         taskList.setPrefHeight(360);
         taskList.setMaxWidth(720);
         taskList.setPlaceholder(createEmptyTaskLabel());
         taskList.setStyle(AppStyleManager.TASK_LIST_STYLE);
-        taskList.setCellFactory(listView -> new ListCell<>() {
+
+        taskList.setCellFactory(listView -> new ListCell<>(){
+
+
             @Override
-            protected void updateItem(String task, boolean empty) {
+            protected void updateItem(TodoItem task, boolean empty) {
                 super.updateItem(task, empty);
 
                 if (empty || task == null) {
                     setText(null);
                     setStyle("-fx-background-color: transparent; -fx-padding: 6px 0;");
                 } else {
-                    setText(task);
+                    setText(task.toString());
                     setStyle(AppStyleManager.TASK_CELL_STYLE + "-fx-background-insets: 6px 0;");
                 }
             }
         });
+        refreshTasks();
 
         Button addItemButton = new Button("+");
         AppStyleManager.applyFloatingButtonStyle(addItemButton);
 
         addItemButton.setOnAction(e -> {
-            SceneManager.getInstance().showAddItemScreen();
+            SceneManager.getInstance().navigateTo(SceneType.ADD_ITEM);
         });
 
         Button logoutButton = new Button("Log out");
@@ -70,7 +69,7 @@ public class DashboardController {
         AppStyleManager.applyButtonStyle(logoutButton);
 
         logoutButton.setOnAction(e -> {
-            SceneManager.getInstance().showLoginScreen();
+            SceneManager.getInstance().navigateTo(SceneType.LOGIN);
         });
 
         Region spacer = new Region();
@@ -90,22 +89,24 @@ public class DashboardController {
                 taskList
         );
 
-        layout = new StackPane();
+        StackPane layout = new StackPane();
         layout.setPadding(new Insets(30));
         layout.setStyle(AppStyleManager.BACKGROUND_STYLE);
         layout.getChildren().addAll(content, addItemButton);
         StackPane.setAlignment(addItemButton, Pos.BOTTOM_RIGHT);
         StackPane.setMargin(addItemButton, new Insets(0, 35, 35, 0));
+
+        return new Scene(layout, 600, 600);
     }
 
-    public StackPane getLayout() {
-        return layout;
+    private void refreshTasks() {
+        taskList.getItems().clear();
+        taskList.getItems().addAll(repository.getTodos());
     }
 
-    public static void addTask(String task) {
-        if (task != null && !task.isBlank()) {
-            TASKS.add(task.trim());
-        }
+    @Override
+    public void update(){
+        refreshTasks();
     }
 
     private String getGreeting() {

@@ -12,7 +12,7 @@ public class TodoRepository {
 
     }
 
-    private static TodoRepository getInstance() {
+    public static TodoRepository getInstance() {
         if (instance == null) {
             instance = new TodoRepository();
         }

@@ -1,9 +1,9 @@
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 /**
  * Eduardo Zamora-Melgoza
@@ -12,18 +12,11 @@ import javafx.stage.Stage;
  *
  */
 
-public class LoginScreen {
+public class LoginController {
 
     private VBox layout;
 
-    private Stage stage;
-
-    public LoginScreen(Stage stage){
-        this.stage = stage;
-        createLoginScreen();
-    }
-
-    private void createLoginScreen(){
+    public Scene buildScene() {
         Label titleLabel  = new Label("Student Productivity \n           Welcome!");
         titleLabel.setStyle(AppStyleManager.TITLE_STYLE);
 
@@ -75,7 +68,7 @@ public class LoginScreen {
         });
 
         signUpButton.setOnAction(e -> {
-            SceneManager.getInstance().navigateTo(SceneType.ADD_ITEM);
+            SceneManager.getInstance().navigateTo(SceneType.SIGN_UP);
         });
 
         HBox buttonBox = new HBox(30, loginButton, signUpButton);
@@ -93,10 +86,6 @@ public class LoginScreen {
                 buttonBox,
                 messageLabel
         );
+        return new Scene(layout, 600, 600);
     }
-
-    public VBox getLayout(){
-        return layout;
-    }
-
 }

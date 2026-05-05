@@ -12,8 +12,8 @@ import org.junit.jupiter.api.*;
 public class UITest {
 
     private Button testButton;
-    private LoginScreen loginScreen;
-    private SignUpScreen signUpScreen;
+    private LoginController loginScreen;
+    private SignUpController signUpScreen;
     @BeforeAll
     static void startJavaFX(){
         Platform.startup(() -> {});
@@ -22,8 +22,8 @@ public class UITest {
     @BeforeEach
     void setUp(){
         testButton = new Button("Test");
-        loginScreen = new LoginScreen(null);
-        signUpScreen = new SignUpScreen(null);
+        loginScreen = new LoginController(null);
+        signUpScreen = new SignUpController(null);
     }
 
     @AfterEach

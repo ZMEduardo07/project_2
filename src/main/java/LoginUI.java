@@ -14,8 +14,8 @@ public class LoginUI extends Application {
     public void start(Stage stage) {
         DatabaseManager.initializeDatabase();
 
-        SceneManager.getInstance().navigateTo(SceneType.MAIN);
         SceneManager.getInstance().setStage(stage);
+        SceneManager.getInstance().navigateTo(SceneType.LOGIN);
 
         stage.setTitle("Student Productivity");
         stage.show();
