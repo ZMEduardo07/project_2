@@ -12,7 +12,7 @@ public class TodoRepository {
 
     }
 
-    private static TodoRepository getInstance() {
+    public static TodoRepository getInstance() {
         if (instance == null) {
             instance = new TodoRepository();
         }
@@ -41,7 +41,7 @@ public class TodoRepository {
     }
 
     public void markCompleted(TodoItem item) {
-        if (item == null) {
+        if (item != null) {
             item.markCompleted();
             notifyObservers();
         }

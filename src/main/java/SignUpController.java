@@ -1,8 +1,9 @@
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+
 
 /**
  * Eduardo Zamora-Melgoza
@@ -11,17 +12,11 @@ import javafx.stage.Stage;
  *
  */
 
-public class SignUpScreen {
+public class SignUpController {
 
     private VBox layout;
-    private Stage stage;
 
-    public SignUpScreen(Stage stage) {
-        this.stage = stage;
-        createScreen();
-    }
-
-    private void createScreen() {
+    public Scene buildScene() {
 
         Label title = new Label("Create Account");
         title.setStyle(AppStyleManager.TITLE_STYLE);
@@ -79,7 +74,7 @@ public class SignUpScreen {
                 boolean created = authService.registerUser(username, password);
                 if (created) {
                     messageLabel.setText("Account created successfully!");
-                    SceneManager.getInstance().showLoginScreen();
+                    SceneManager.getInstance().navigateTo(SceneType.LOGIN);
                 } else {
                     messageLabel.setText("Account already exists.");
                 }
@@ -87,7 +82,7 @@ public class SignUpScreen {
         });
 
         backButton.setOnAction(e -> {
-            SceneManager.getInstance().showLoginScreen();
+            SceneManager.getInstance().navigateTo(SceneType.LOGIN);
         });
 
         layout = new VBox(25);
@@ -98,8 +93,6 @@ public class SignUpScreen {
         layout.getChildren().addAll(title, usernameField, passwordField, confirmField,
                 createButton, backButton, messageLabel);
 
-    }
-    public VBox getLayout(){
-        return layout;
+        return new Scene(layout, 600, 600);
     }
 }

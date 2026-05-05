@@ -1,21 +1,19 @@
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 public class AddItemController {
-    private VBox layout;
-    private Stage stage;
+    private final TodoRepository repository;
 
-    public AddItemController(Stage stage) {
-        this.stage = stage;
-        createAddItemScreen();
+    public AddItemController(){
+        repository = TodoRepository.getInstance();
     }
 
-    private void createAddItemScreen() {
+    public Scene buildScene() {
         Label titleLabel = new Label("Add Item");
         titleLabel.setStyle(AppStyleManager.TITLE_STYLE);
 
@@ -34,9 +32,10 @@ public class AddItemController {
         
         addButton.setOnAction(e -> {
             String item = itemField.getText();
+
             if (!item.isBlank()) {
-                DashboardController.addTask(item);
-                SceneManager.getInstance().showDashboardScreen();
+                repository.addTodo(item);
+                SceneManager.getInstance().navigateTo(SceneType.DASHBOARD);
             } else {
                 messageLabel.setText("Item cannot be empty.");
             }
@@ -48,10 +47,10 @@ public class AddItemController {
         AppStyleManager.applyButtonStyle(cancelButton);
 
         cancelButton.setOnAction(e -> {
-            SceneManager.getInstance().showDashboardScreen();
+            SceneManager.getInstance().navigateTo(SceneType.DASHBOARD);
         });
 
-        layout = new VBox(20);
+        VBox layout = new VBox(20);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(30));
         layout.setStyle(AppStyleManager.BACKGROUND_STYLE);
@@ -63,9 +62,7 @@ public class AddItemController {
                 cancelButton,
                 messageLabel
         );
-    }
 
-    public VBox getLayout() {
-        return layout;
+        return new Scene(layout, 600, 600);
     }
 }

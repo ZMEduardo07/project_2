@@ -1,31 +1,27 @@
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import java.time.LocalTime;
 
-public class DashboardController {
-    private static final ObservableList<String> TASKS = FXCollections.observableArrayList();
+public class DashboardController implements TodoObserver {
+    private ListView<TodoItem> taskList;
+    private final TodoRepository repository;
+    private ProgressBar taskProgressBar;
+    private Label progressLabel;
 
-    private StackPane layout;
-    private Stage stage;
 
-    public DashboardController(Stage stage) {
-        this.stage = stage;
-        createDashboard();
+    public DashboardController(){
+        repository = TodoRepository.getInstance();
+        repository.addObserver(this);
     }
 
-    private void createDashboard() {
+    public Scene buildScene() {
         Label titleLabel = new Label(getGreeting());
         titleLabel.setStyle(AppStyleManager.TITLE_STYLE);
 
@@ -36,32 +32,53 @@ public class DashboardController {
         greetingBox.setAlignment(Pos.CENTER_LEFT);
         greetingBox.getChildren().addAll(titleLabel, subtitleLabel);
 
-        ListView<String> taskList = new ListView<>();
-        taskList.setItems(TASKS);
+        taskList = new ListView<>();
         taskList.setPrefHeight(360);
         taskList.setMaxWidth(720);
         taskList.setPlaceholder(createEmptyTaskLabel());
         taskList.setStyle(AppStyleManager.TASK_LIST_STYLE);
-        taskList.setCellFactory(listView -> new ListCell<>() {
+
+        taskProgressBar = new ProgressBar(0);
+        taskProgressBar.setPrefWidth(720);
+
+        progressLabel = new Label("0% complete");
+        progressLabel.setStyle(AppStyleManager.MESSAGE_STYLE);
+
+
+        Button completeButton = new Button("Complete");
+        completeButton.setPrefWidth(120);
+        completeButton.setPrefHeight(38);
+        AppStyleManager.applyButtonStyle(completeButton);
+
+        completeButton.setOnAction(e -> {
+            TodoItem selectedTask = taskList.getSelectionModel().getSelectedItem();
+            repository.markCompleted(selectedTask);
+        });
+
+        taskList.setCellFactory(listView -> new ListCell<>(){
+
+
+
             @Override
-            protected void updateItem(String task, boolean empty) {
+            protected void updateItem(TodoItem task, boolean empty) {
                 super.updateItem(task, empty);
 
                 if (empty || task == null) {
                     setText(null);
                     setStyle("-fx-background-color: transparent; -fx-padding: 6px 0;");
                 } else {
-                    setText(task);
+                    setText(task.toString());
                     setStyle(AppStyleManager.TASK_CELL_STYLE + "-fx-background-insets: 6px 0;");
                 }
             }
         });
+        refreshTasks();
 
         Button addItemButton = new Button("+");
         AppStyleManager.applyFloatingButtonStyle(addItemButton);
 
         addItemButton.setOnAction(e -> {
-            SceneManager.getInstance().showAddItemScreen();
+            SceneManager.getInstance().navigateTo(SceneType.ADD_ITEM);
         });
 
         Button logoutButton = new Button("Log out");
@@ -70,7 +87,7 @@ public class DashboardController {
         AppStyleManager.applyButtonStyle(logoutButton);
 
         logoutButton.setOnAction(e -> {
-            SceneManager.getInstance().showLoginScreen();
+            SceneManager.getInstance().navigateTo(SceneType.LOGIN);
         });
 
         Region spacer = new Region();
@@ -79,7 +96,7 @@ public class DashboardController {
         HBox topRow = new HBox(20);
         topRow.setAlignment(Pos.CENTER);
         topRow.setMaxWidth(760);
-        topRow.getChildren().addAll(greetingBox, spacer, logoutButton);
+        topRow.getChildren().addAll(greetingBox, spacer, completeButton, logoutButton);
 
         VBox content = new VBox(18);
         content.setAlignment(Pos.TOP_CENTER);
@@ -87,25 +104,47 @@ public class DashboardController {
         content.setStyle(AppStyleManager.BACKGROUND_STYLE);
         content.getChildren().addAll(
                 topRow,
+                taskProgressBar,
+                progressLabel,
                 taskList
         );
 
-        layout = new StackPane();
+        StackPane layout = new StackPane();
         layout.setPadding(new Insets(30));
         layout.setStyle(AppStyleManager.BACKGROUND_STYLE);
         layout.getChildren().addAll(content, addItemButton);
         StackPane.setAlignment(addItemButton, Pos.BOTTOM_RIGHT);
         StackPane.setMargin(addItemButton, new Insets(0, 35, 35, 0));
+
+        return new Scene(layout, 600, 600);
     }
 
-    public StackPane getLayout() {
-        return layout;
-    }
+    private void refreshTasks() {
+        taskList.getItems().clear();
+        taskList.getItems().addAll(repository.getTodos());
 
-    public static void addTask(String task) {
-        if (task != null && !task.isBlank()) {
-            TASKS.add(task.trim());
+        int totalTasks = repository.getTodos().size();
+        int completedTasks = 0;
+
+        for(TodoItem item : repository.getTodos()){
+            if(item.isCompleted()){
+                completedTasks++;
+            }
         }
+
+        double progress = 0.0;
+        if (totalTasks > 0){
+            progress = (double) completedTasks / totalTasks;
+        }
+        taskProgressBar.setProgress(progress);
+        int percent = (int)(progress * 100);
+        progressLabel.setText(percent + "% complete");
+
+    }
+
+    @Override
+    public void update(){
+        refreshTasks();
     }
 
     private String getGreeting() {
