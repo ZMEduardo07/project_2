@@ -68,6 +68,23 @@ public class AppStyleManager {
                         "-fx-background-radius: 10;" +
                         "-fx-padding: 20px;";
 
+        public static final String START_STEPS_PANEL_STYLE = "-fx-background-color: #242424;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-border-color: #333333;" +
+                        "-fx-border-radius: 8;" +
+                        "-fx-border-width: 1px;" +
+                        "-fx-padding: 16px;";
+
+        public static final String START_STEPS_TITLE_STYLE = "-fx-font-family: sans-serif;" +
+                        "-fx-text-fill: #FFFFFF;" +
+                        "-fx-font-size: 17px;" +
+                        "-fx-font-weight: bold;";
+
+        public static final String START_STEP_LABEL_STYLE = "-fx-font-family: sans-serif;" +
+                        "-fx-text-fill: #D6D6D6;" +
+                        "-fx-font-size: 15px;" +
+                        "-fx-padding: 4px 0;";
+
         public static final String FLOATING_BUTTON_STYLE = "-fx-background-color: #FFFFFF;" +
                         "-fx-text-fill: #0A0A0A;" +
                         "-fx-font-family: sans-serif;" +
