@@ -16,6 +16,21 @@ public class SignUpController {
 
     private VBox layout;
 
+    public SignUpController() {
+    }
+
+    public SignUpController(Object ignored) {
+        buildScene();
+    }
+
+    public VBox getLayout() {
+        if (layout == null) {
+            buildScene();
+        }
+
+        return layout;
+    }
+
     public Scene buildScene() {
 
         Label title = new Label("Create Account");

@@ -1,9 +1,14 @@
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -70,5 +75,43 @@ public class DatabaseTest {
 
         assertTrue(deleted);
         assertFalse(canStillLogIn);
+    }
+
+    @Test
+    void initializeDatabaseCreatesTaskTables() throws SQLException {
+        try (Connection conn = DatabaseManager.connect()) {
+            assertTrue(tableExists(conn, "tasks"));
+            assertTrue(tableExists(conn, "task_steps"));
+        }
+    }
+
+    @Test
+    void todoRepositoryPersistsTasksAndSteps() {
+        TodoRepository repository = TodoRepository.getInstance();
+
+        repository.addTodo("cook chicken rice");
+        TodoItem savedTask = repository.getTodos().get(0);
+        List<String> steps = List.of(
+                "Open the rice bag.",
+                "Take out the chicken.",
+                "Place a pan on the stove."
+        );
+
+        repository.saveTaskSteps(savedTask, steps);
+
+        assertEquals("cook chicken rice", repository.getTodos().get(0).getTitle());
+        assertEquals(steps, repository.getTaskSteps(savedTask));
+    }
+
+    private boolean tableExists(Connection conn, String tableName) throws SQLException {
+        String sql = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?";
+
+        try (var pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, tableName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next();
+            }
+        }
     }
 }

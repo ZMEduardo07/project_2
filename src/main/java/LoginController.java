@@ -16,6 +16,21 @@ public class LoginController {
 
     private VBox layout;
 
+    public LoginController() {
+    }
+
+    public LoginController(Object ignored) {
+        buildScene();
+    }
+
+    public VBox getLayout() {
+        if (layout == null) {
+            buildScene();
+        }
+
+        return layout;
+    }
+
     public Scene buildScene() {
         Label titleLabel  = new Label("Student Productivity \n           Welcome!");
         titleLabel.setStyle(AppStyleManager.TITLE_STYLE);
