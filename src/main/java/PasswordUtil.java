@@ -2,6 +2,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
 
+/**
+ * Siberaja Nadar
+ * 4/21/26
+ * 
+ * 
+ */
+
 public class PasswordUtil {
 
     public static String hashPassword(String password) {

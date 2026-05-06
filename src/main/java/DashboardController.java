@@ -174,7 +174,7 @@ public class DashboardController implements TodoObserver {
         showLoadingSteps(task);
 
         CompletableFuture
-                .supplyAsync(() -> taskInitiationService.createStartSteps(task.getTitle()))
+                .supplyAsync(() -> getOrCreateStartSteps(task))
                 .whenComplete((steps, error) -> Platform.runLater(() -> {
                     if (taskList.getSelectionModel().getSelectedItem() != task) {
                         return;
@@ -186,6 +186,18 @@ public class DashboardController implements TodoObserver {
                         showStartSteps(task, steps);
                     }
                 }));
+    }
+
+    private List<String> getOrCreateStartSteps(TodoItem task) {
+        List<String> savedSteps = repository.getTaskSteps(task);
+
+        if (savedSteps.size() == 3) {
+            return savedSteps;
+        }
+
+        List<String> generatedSteps = taskInitiationService.createStartSteps(task.getTitle());
+        repository.saveTaskSteps(task, generatedSteps);
+        return generatedSteps;
     }
 
     private void showLoadingSteps(TodoItem task) {

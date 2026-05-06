@@ -3,6 +3,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Siberaja Nadar
+ * 4/21/26
+ * 
+ * 
+ */
+
 public class AuthService {
 
     public boolean registerUser(String username, String password) {
